@@ -7,7 +7,26 @@ if getgenv().library then
 	getgenv().library:Unload()
 end
 
-local library = {design = getgenv().design == "kali" and "kali", tabs = {}, draggable = true, flags = {}, title = "awakenkn-hub", open = false, mousestate = inputService.MouseIconEnabled,popup = nil, instances = {}, connections = {}, options = {}, notifications = {}, tabSize = 0, theme = {}, foldername = "awakenkn-hubv3", fileext = ".json"}
+local library = {
+	design = getgenv().design == "kali" and "kali",
+	tabs = {},
+	draggable = true,
+	flags = {
+		["Menu Accent Color"] = Color3.fromRGB(225, 0, 255), -- Set initial accent color to pink
+	},
+	title = "awakenkn-hub",
+	open = false,
+	mousestate = inputService.MouseIconEnabled,
+	popup = nil,
+	instances = {},
+	connections = {},
+	options = {},
+	notifications = {},
+	tabSize = 0,
+	theme = {},
+	foldername = "awakenkn-hubv3",
+	fileext = ".json"
+}
 if getgenv().scripttitle then
     library.title = getgenv().scripttitle
 end
@@ -1586,6 +1605,20 @@ library.createColorPickerWindow = function(option)
 	return option
 end
 
+-- Add this helper function near the top
+local function safeColor3(r, g, b)
+    -- Ensure RGB values are valid numbers between 0-255
+    r = tonumber(r) or 0
+    g = tonumber(g) or 0 
+    b = tonumber(b) or 0
+    
+    r = math.clamp(r, 0, 255)
+    g = math.clamp(g, 0, 255)
+    b = math.clamp(b, 0, 255)
+    
+    return Color3.fromRGB(r, g, b)
+end
+
 library.createColor = function(option, parent)
 	option.hasInit = true
 
@@ -1700,7 +1733,7 @@ library.createColor = function(option, parent)
 
 	function option:SetColor(newColor, nocallback)
 		if typeof(newColor) == "table" then
-			newColor = Color3.new(newColor[1], newColor[2], newColor[3])
+			newColor = safeColor3(newColor[1], newColor[2], newColor[3])
 		end
 		newColor = newColor or Color3.new(1, 1, 1)
 		if self.mainHolder then
@@ -2075,7 +2108,10 @@ function library:AddTab(title, pos)
 				option = typeof(option) == "table" and option or {}
 				option.section = self
 				option.text = tostring(option.text)
-				option.color = typeof(option.color) == "table" and Color3.new(option.color[1], option.color[2], option.color[3]) or option.color or Color3.new(1, 1, 1)
+				option.color = typeof(option.color) == "table" and 
+					safeColor3(option.color[1], option.color[2], option.color[3]) or
+					option.color or 
+					Color3.new(1, 1, 1)
 				option.callback = typeof(option.callback) == "function" and option.callback or function() end
 				option.calltrans = typeof(option.calltrans) == "function" and option.calltrans or (option.calltrans == 1 and option.callback) or function() end
 				option.open = false
