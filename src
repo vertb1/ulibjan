@@ -3,6 +3,7 @@ getgenv().runService = game:GetService"RunService"
 getgenv().textService = game:GetService"TextService"
 getgenv().inputService = game:GetService"UserInputService"
 getgenv().tweenService = game:GetService"TweenService"
+getgenv().httpService = game:GetService"HttpService"
 if getgenv().library then
 	getgenv().library:Unload()
 end
@@ -2737,6 +2738,120 @@ function library:Init()
 	if not getgenv().silent then
 		delay(1, function() self:Close() end)
 	end
+end
+
+-- Add notification system to library
+function library:AddNotification(options)
+    options = options or {}
+    local title = options.title or "Notification"
+    local text = options.text or ""
+    local duration = options.duration or 3
+    local callback = options.callback
+
+    -- Create notification container if it doesn't exist
+    if not self.notificationHolder then
+        self.notificationHolder = library:Create("Frame", {
+            Position = UDim2.new(0, 10, 0, 10),
+            Size = UDim2.new(0, 300, 1, -20),
+            BackgroundTransparency = 1,
+            Parent = self.base
+        })
+
+        library:Create("UIListLayout", {
+            Padding = UDim.new(0, 5),
+            Parent = self.notificationHolder
+        })
+    end
+
+    -- Create notification
+    local notification = library:Create("Frame", {
+        Size = UDim2.new(1, 0, 0, 0),
+        BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+        BorderColor3 = library.flags["Menu Accent Color"],
+        Parent = self.notificationHolder,
+        ClipsDescendants = true
+    })
+
+    library:Create("UICorner", {
+        CornerRadius = UDim.new(0, 4),
+        Parent = notification
+    })
+
+    local content = library:Create("Frame", {
+        Size = UDim2.new(1, -8, 1, -8),
+        Position = UDim2.new(0, 4, 0, 4),
+        BackgroundTransparency = 1,
+        Parent = notification
+    })
+
+    local titleLabel = library:Create("TextLabel", {
+        Size = UDim2.new(1, 0, 0, 20),
+        BackgroundTransparency = 1,
+        Text = title,
+        TextColor3 = library.flags["Menu Accent Color"],
+        TextSize = 16,
+        Font = Enum.Font.Code,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = content
+    })
+
+    local textLabel = library:Create("TextLabel", {
+        Size = UDim2.new(1, 0, 0, 0),
+        Position = UDim2.new(0, 0, 0, 24),
+        BackgroundTransparency = 1,
+        Text = text,
+        TextColor3 = Color3.new(1, 1, 1),
+        TextSize = 14,
+        Font = Enum.Font.Code,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextWrapped = true,
+        Parent = content
+    })
+
+    -- Calculate text height
+    local textSize = textService:GetTextSize(text, 14, Enum.Font.Code, Vector2.new(content.AbsoluteSize.X, 9e9))
+    textLabel.Size = UDim2.new(1, 0, 0, textSize.Y)
+    notification.Size = UDim2.new(1, 0, 0, textSize.Y + 40)
+
+    -- Animation
+    notification.BackgroundTransparency = 1
+    titleLabel.TextTransparency = 1
+    textLabel.TextTransparency = 1
+
+    -- Fade in
+    local fadeIn = tweenService:Create(notification, TweenInfo.new(0.2), {BackgroundTransparency = 0})
+    local fadeInText1 = tweenService:Create(titleLabel, TweenInfo.new(0.2), {TextTransparency = 0})
+    local fadeInText2 = tweenService:Create(textLabel, TweenInfo.new(0.2), {TextTransparency = 0})
+    
+    fadeIn:Play()
+    fadeInText1:Play()
+    fadeInText2:Play()
+
+    -- Callback for clicking
+    if callback then
+        notification.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                callback()
+            end
+        end)
+    end
+
+    -- Auto remove
+    spawn(function()
+        wait(duration)
+        
+        -- Fade out
+        local fadeOut = tweenService:Create(notification, TweenInfo.new(0.2), {BackgroundTransparency = 1})
+        local fadeOutText1 = tweenService:Create(titleLabel, TweenInfo.new(0.2), {TextTransparency = 1})
+        local fadeOutText2 = tweenService:Create(textLabel, TweenInfo.new(0.2), {TextTransparency = 1})
+        
+        fadeOut:Play()
+        fadeOutText1:Play()
+        fadeOutText2:Play()
+        
+        wait(0.2)
+        notification:Destroy()
+    end)
 end
 
 return library
