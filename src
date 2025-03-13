@@ -15,7 +15,7 @@ local library = {
 	flags = {
 		["Menu Accent Color"] = Color3.fromRGB(225, 0, 255), -- Set initial accent color to pink
 	},
-	title = "awakenkn-hub",
+	title = "ethrin-hub",
 	open = false,
 	mousestate = inputService.MouseIconEnabled,
 	popup = nil,
