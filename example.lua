@@ -1,15 +1,6 @@
-
-for _,v in pairs(getconnections(game:GetService("ScriptContext").Error)) do
-    v:Disable()
-end
-
-for _,v in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-    v:Disable()
-end
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Pixeluted/adoniscries/refs/heads/main/Source.lua"))()
 getgenv().scripttitle = "awakenkn-like-femboys"
 getgenv().FolderName = "Femboyawakenkn"
-loadstring(game:HttpGet('https://raw.githubusercontent.com/Awakenchan/jan/main/JanModifiedSource'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/vertb1/ulibjan/refs/heads/main/src'))()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Awakenchan/WhitelistSystem/main/Notification"))()
 local Notif = Library:InitNotifications()
 Library.title = "Loading"
