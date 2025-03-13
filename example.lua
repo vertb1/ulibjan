@@ -1,7 +1,7 @@
 getgenv().scripttitle = "awakenkn-like-femboys"
 getgenv().FolderName = "Femboyawakenkn"
 loadstring(game:HttpGet('https://raw.githubusercontent.com/vertb1/ulibjan/refs/heads/main/src'))()
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Awakenchan/WhitelistSystem/main/Notification"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/vertb1/ulibjan/refs/heads/main/notis"))()
 local Notif = Library:InitNotifications()
 Library.title = "Loading"
 local Warning = library:AddWarning({type = "confirm"});
